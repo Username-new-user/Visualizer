@@ -1,0 +1,11 @@
+[apk]
+path = "/path/to/apk/file"
+
+[output]
+path = "/path/to/output/graph.png"
+
+[plantuml]
+path = "/path/to/plantuml"
+
+[analysis]
+max_depth = 3
