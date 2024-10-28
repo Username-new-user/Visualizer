@@ -1,0 +1,16 @@
+*.pyc
+build/
+dist/
+*.egg-info/
+.tox
+.idea
+htmlcov
+.coverage
+.cache
+.ipynb_checkpoints/
+MANIFEST
+coverage
+venv/
+
+# Managed by github-actions (cache + artifact) per python version - see pipeline artifacts
+Pipfile.lock

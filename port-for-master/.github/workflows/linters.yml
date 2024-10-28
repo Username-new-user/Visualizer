@@ -1,0 +1,14 @@
+name: Run linters
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  lint:
+    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v2.4.8
+    with:
+      mypy: true
+      ruff: true
+      black: true
