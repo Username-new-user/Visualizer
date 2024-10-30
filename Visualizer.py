@@ -53,3 +53,15 @@ def main(config_path):
     
     print("Граф зависимостей успешно сохранен.")
 
+
+def read_apkbuild(apkbuild_path):
+    with open(apkbuild_path, 'r') as file:
+        content = file.read()
+        
+    makedepends_match = re.search(r'makedepends="([^"]+)"', content)
+    if makedepends_match:
+        dependencies = makedepends_match.group(1).split()
+        return dependencies
+    else:
+        return []
+
