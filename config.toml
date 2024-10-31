@@ -1,11 +1,11 @@
 [apk]
-path = "./port-for-master"
+path = "APKBUILD.apkbuild"
 
 [output]
-path = "./graph.png"
+path = "graph.png"
 
 [plantuml]
-path = "/path/to/plantuml"
+path = "plantuml"
 
 [analysis]
 max_depth = 5

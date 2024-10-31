@@ -1,4 +1,4 @@
-import tomllib, os
+import tomllib, os, re
 
 def read_config(config_path):
     with open(config_path, "rb") as f:
@@ -6,22 +6,30 @@ def read_config(config_path):
     return config
 
 
-def get_dependencies(apk_path, max_depth):
-    dependencies = {}
-    visited = set()
-    
-    def extract_dependencies(package, depth):
-        if depth > max_depth or package in visited:
-            return
-        visited.add(package)
+def read_apkbuild(apkbuild_path):
+    with open(apkbuild_path, 'r') as file:
+        content = file.read()
         
-        pkg_dependencies = get_package_metadata(package)
-        dependencies[package] = pkg_dependencies
-        
-        for dep in pkg_dependencies:
-            extract_dependencies(dep, depth + 1)
+    makedepends_match = re.search(r'makedepends="([^"]+)"', content)
+    if makedepends_match:
+        dependencies = makedepends_match.group(1).split()
+        return dependencies
+    else:
+        return []
 
-    extract_dependencies(apk_path, 0)
+
+def get_dependencies(apk_path, max_depth):
+    dependencies = []
+    queue = [(apk_path, 0)]
+    
+    while queue:
+        apk_path, depth = queue.pop(0)
+        dependencies += read_apkbuild(apk_path)
+        
+        if depth < max_depth:
+            for dependency in read_apkbuild(apk_path):
+                queue.append((dependency, depth + 1))
+                
     return dependencies
 
 
@@ -44,6 +52,7 @@ def main(config_path):
     
     # Извлечение зависимостей
     dependencies = get_dependencies(apk_path, max_depth)
+    print('here')
     
     # Построение UML-графа
     uml_content = create_text_graph(dependencies)
@@ -54,14 +63,4 @@ def main(config_path):
     print("Граф зависимостей успешно сохранен.")
 
 
-def read_apkbuild(apkbuild_path):
-    with open(apkbuild_path, 'r') as file:
-        content = file.read()
-        
-    makedepends_match = re.search(r'makedepends="([^"]+)"', content)
-    if makedepends_match:
-        dependencies = makedepends_match.group(1).split()
-        return dependencies
-    else:
-        return []
-
+main('config.toml')
