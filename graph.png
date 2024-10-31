@@ -1,0 +1,7 @@
+@startuml
+package --> gd-dev
+package --> libusb-compat-dev
+package --> linux-headers
+package --> mandoc
+package --> net-snmp-dev
+@enduml

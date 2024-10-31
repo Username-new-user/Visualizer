@@ -17,30 +17,20 @@ def read_apkbuild(apkbuild_path):
     else:
         return []
 
+def generate_plantuml(dependencies):
+    plantuml_code = "@startuml\n"
+    for dep in dependencies:
+        plantuml_code += f"package --> {dep}\n"
+    plantuml_code += "@enduml\n"
+    return plantuml_code
 
-def get_dependencies(apk_path, max_depth):
-    dependencies = []
-    queue = [(apk_path, 0)]
-    
-    while queue:
-        apk_path, depth = queue.pop(0)
-        dependencies += read_apkbuild(apk_path)
-        
-        if depth < max_depth:
-            for dependency in read_apkbuild(apk_path):
-                queue.append((dependency, depth + 1))
-                
-    return dependencies
-
-
-def get_package_metadata(package):
-    return ['dep1', 'dep2', 'dep3']
-
-def create_text_graph(dependencies):
-    pass
+def write_plantuml(output_file, plantuml_code):
+    with open(output_file, 'w') as file:
+        file.write(plantuml_code)
 
 def create_graph(uml_content, output_path, plantuml_path):
-    pass
+    #create png
+    os.system(f"{plantuml_path} {output_path}")
 
 def main(config_path):
     config = read_config(config_path)
@@ -51,14 +41,18 @@ def main(config_path):
     max_depth = config['analysis']['max_depth']
     
     # Извлечение зависимостей
-    dependencies = get_dependencies(apk_path, max_depth)
-    print('here')
+    dependencies = read_apkbuild(apk_path)
     
-    # Построение UML-графа
-    uml_content = create_text_graph(dependencies)
+    plantuml_code = generate_plantuml(dependencies)
     
+    write_plantuml(output_path, plantuml_code)
+    
+    print(plantuml_code)
+    
+    output_image_path = os.path.dirname(output_path)
+    print(f"Сохранение PlantUML кода в файл {output_path}")
     # Генерация графа
-    create_graph(uml_content, output_path, plantuml_path)
+    create_graph(plantuml_code, output_path, plantuml_path)
     
     print("Граф зависимостей успешно сохранен.")
 
