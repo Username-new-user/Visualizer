@@ -1,4 +1,5 @@
 import tomllib, os, re
+from plantuml import PlantUML
 
 def read_config(config_path):
     with open(config_path, "rb") as f:
@@ -29,7 +30,6 @@ def write_plantuml(output_file, plantuml_code):
         file.write(plantuml_code)
 
 def create_graph(uml_content, output_path, plantuml_path):
-    #create png
     os.system(f"{plantuml_path} {output_path}")
 
 def main(config_path):
@@ -48,11 +48,16 @@ def main(config_path):
     write_plantuml(output_path, plantuml_code)
     
     print(plantuml_code)
+
+    plantuml_server = PlantUML(url='http://www.plantuml.com/plantuml/png/')
+
+    with open('graph.png', 'wb') as f:
+        f.write(plantuml_server.processes(plantuml_code))
     
-    output_image_path = os.path.dirname(output_path)
+    #output_image_path = os.path.dirname(output_path)
     print(f"Сохранение PlantUML кода в файл {output_path}")
     # Генерация графа
-    create_graph(plantuml_code, output_path, plantuml_path)
+    #create_graph(plantuml_code, output_path, plantuml_path)
     
     print("Граф зависимостей успешно сохранен.")
 
